@@ -1,5 +1,6 @@
 package fauzi.hilmy.quiznewsapple;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +29,7 @@ import fauzi.hilmy.quiznewsapple.api.ApiInterface;
 import fauzi.hilmy.quiznewsapple.response.ArticlesItem;
 import fauzi.hilmy.quiznewsapple.response.ResponseNews;
 import fauzi.hilmy.quiznewsapple.response.Source;
-import okhttp3.OkHttpClient;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         List<ArticlesItem> articlesItems;
         Context context;
 
-        public CustomAdapter(List<ArticlesItem> articlesItems, Context context) {
+        CustomAdapter(List<ArticlesItem> articlesItems, Context context) {
             this.articlesItems = articlesItems;
             this.context = context;
         }
@@ -92,22 +92,21 @@ public class MainActivity extends AppCompatActivity {
             return new MyViewHolder(view);
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
-        public void onBindViewHolder(@NonNull CustomAdapter.MyViewHolder holder, final int position) {
-            Source sources = (Source) articlesItems.get(position).getSource();
+        public void onBindViewHolder(@NonNull CustomAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+            Source sources = articlesItems.get(position).getSource();
             holder.txtSource.setText(sources.getName());
             holder.txtTitle.setText(articlesItems.get(position).getTitle());
             holder.txtAuthor.setText(articlesItems.get(position).getAuthor());
-//
-//            String datee = articlesItems.get(position).getPublishedAt();
-//            String newDate = datee.substring(1, 10);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             try {
                 Date date = dateFormat.parse(articlesItems.get(position).getPublishedAt());
-                SimpleDateFormat newDateFormat = new SimpleDateFormat("EEEE, dd MMM yyyy");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat newDateFormat = new SimpleDateFormat("EEEE, dd MMM yyyy");
                 String date_release = newDateFormat.format(date);
 
-                SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
                 String date_hour = hourFormat.format(date);
                 holder.txtDate.setText(date_release + " at " + date_hour);
             } catch (ParseException e) {
@@ -132,11 +131,11 @@ public class MainActivity extends AppCompatActivity {
             return articlesItems.size();
         }
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
+        class MyViewHolder extends RecyclerView.ViewHolder {
             ImageView imgNews;
             TextView txtDate, txtAuthor, txtSource, txtTitle;
 
-            public MyViewHolder(View itemView) {
+            MyViewHolder(View itemView) {
                 super(itemView);
                 imgNews = itemView.findViewById(R.id.imgBerita);
                 txtDate = itemView.findViewById(R.id.txtDate);
